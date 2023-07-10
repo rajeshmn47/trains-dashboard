@@ -1,23 +1,81 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { sortall } from "./utils/sorting";
+import { MdArrowDownward, MdArrowBack } from "react-icons/md";
 
+const headers = [
+  { headerName: "train name", fieldName: "trainName", type: "string" },
+  { headerName: "duration", fieldName: "duration", type: "time" },
+  { headerName: "train number", fieldName: "trainNumber", type: "int" },
+  { headerName: "distance", fieldName: "distance", type: "int" },
+];
 function App() {
+  const [trains, setTrains] = useState([]);
+  const [sort, setSort] = useState({
+    order: "",
+    field: "",
+    type: "",
+  });
+  useEffect(() => {
+    async function getalltrains() {
+      const data = await axios.get("http://localhost:9000/trains");
+      let trainData = data.data.data;
+      let t = [];
+      setTrains(
+        trainData.forEach((d) =>
+          t.push({ ...d, distance: d.stations[d.stations.length - 1].distance })
+        )
+      );
+      setTrains([...t]);
+    }
+    getalltrains();
+  }, []);
+  console.log(trains, "data");
+  useEffect(() => {
+    sortall(trains, sort);
+  }, [sort]);
+  const handleSort = (p) => {
+    setSort({
+      field: p.fieldName,
+      order: p.order == "asc" ? "dsc" : "asc",
+      type: p.type,
+    });
+  };
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <table>
+        <thead>
+          <tr>
+            {headers.map((t, key) => {
+              return (
+                <th key={key} onClick={() => handleSort(t)}>
+                  {t.headerName}
+                  {sort.field == `${t.fieldName}` && sort.order == "asc" ? (
+                    <MdArrowDownward />
+                  ) : sort.field == `${t.fieldName}` && sort.order == "dsc" ? (
+                    <MdArrowBack />
+                  ) : null}
+                </th>
+              );
+            })}
+          </tr>
+        </thead>
+        <tbody>
+          {trains.length > 0 &&
+            trains?.map((t, key) => {
+              return (
+                <tr key={key}>
+                  <td>{t.trainName}</td>
+                  <td>{t.duration}</td>
+                  <td>{t.trainNumber}</td>
+                  <td>{t.distance}</td>
+                </tr>
+              );
+            })}
+        </tbody>
+      </table>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { sortall } from "./utils/sorting";
-import { MdArrowDownward, MdArrowBack } from "react-icons/md";
+import { MdArrowDownward, MdArrowBack, MdArrowUpward } from "react-icons/md";
 
 const headers = [
   { headerName: "train name", fieldName: "trainName", type: "string" },
@@ -32,20 +32,20 @@ function App() {
     }
     getalltrains();
   }, []);
-  console.log(trains, "data");
+  console.log(sort, "sort");
   useEffect(() => {
     sortall(trains, sort);
   }, [sort]);
   const handleSort = (p) => {
     setSort({
       field: p.fieldName,
-      order: p.order == "asc" ? "dsc" : "asc",
+      order: sort.order == "asc" ? "dsc" : "asc",
       type: p.type,
     });
   };
   return (
-    <div className="App">
-      <table>
+    <div className="container">
+      <table style={{ borderCollapse: "collapse" }}>
         <thead>
           <tr>
             {headers.map((t, key) => {
@@ -55,7 +55,7 @@ function App() {
                   {sort.field == `${t.fieldName}` && sort.order == "asc" ? (
                     <MdArrowDownward />
                   ) : sort.field == `${t.fieldName}` && sort.order == "dsc" ? (
-                    <MdArrowBack />
+                    <MdArrowUpward />
                   ) : null}
                 </th>
               );

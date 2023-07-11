@@ -32,6 +32,17 @@ export function sortall(arr, filter) {
         return 0;
       });
     }
+    if (filter.order == "asc" && filter.type == "time") {
+      return arr.sort(
+        (a, b) =>
+          parseInt(time(a[filter.field])) - parseInt(time(b[filter.field]))
+      );
+    }
     return arr;
   }
+}
+function time(t) {
+  let hours = t.split(" ")[0];
+  let minutes = t.split(" ")[2];
+  return hours * 60 + minutes;
 }

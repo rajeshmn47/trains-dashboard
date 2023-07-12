@@ -3,9 +3,11 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { sortall } from "./utils/sorting";
+import video from "./Videos/railway.mp4";
 import { MdArrowDownward, MdArrowBack, MdArrowUpward } from "react-icons/md";
 
 const headers = [
+  {headerName: "id", fieldName: "", type: ""},
   { headerName: "train name", fieldName: "trainName", type: "string" },
   { headerName: "duration", fieldName: "duration", type: "time" },
   { headerName: "train number", fieldName: "trainNumber", type: "int" },
@@ -45,37 +47,44 @@ function App() {
   };
   return (
     <div className="container">
-      <table style={{ borderCollapse: "collapse" }}>
-        <thead>
-          <tr>
-            {headers.map((t, key) => {
-              return (
-                <th key={key} onClick={() => handleSort(t)}>
-                  {t.headerName}
-                  {sort.field == `${t.fieldName}` && sort.order == "asc" ? (
-                    <MdArrowDownward />
-                  ) : sort.field == `${t.fieldName}` && sort.order == "dsc" ? (
-                    <MdArrowUpward />
-                  ) : null}
-                </th>
-              );
-            })}
-          </tr>
-        </thead>
-        <tbody>
-          {trains.length > 0 &&
-            trains?.map((t, key) => {
-              return (
-                <tr key={key}>
-                  <td>{t.trainName}</td>
-                  <td>{t.duration}</td>
-                  <td>{t.trainNumber}</td>
-                  <td>{t.distance}</td>
-                </tr>
-              );
-            })}
-        </tbody>
-      </table>
+      <video width="1260" height="700" autoplay="autoplay">
+        <source src={video} type="video/mp4" />
+      </video>
+      <div className="traintable">
+        <table style={{ borderCollapse: "collapse" }}>
+          <thead>
+            <tr>
+              {headers.map((t, key) => {
+                return (
+                  <th key={key} onClick={() => handleSort(t)}>
+                    {t.headerName}
+                    {sort.field == `${t.fieldName}` && sort.order == "asc" ? (
+                      <MdArrowDownward />
+                    ) : sort.field == `${t.fieldName}` &&
+                      sort.order == "dsc" ? (
+                      <MdArrowUpward />
+                    ) : null}
+                  </th>
+                );
+              })}
+            </tr>
+          </thead>
+          <tbody>
+            {trains.length > 0 &&
+              trains?.map((t, key) => {
+                return (
+                  <tr key={key}>
+                    <td>{key+1}</td>
+                    <td>{t.trainName}</td>
+                    <td>{t.duration}</td>
+                    <td>{t.trainNumber}</td>
+                    <td>{t.distance}</td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
